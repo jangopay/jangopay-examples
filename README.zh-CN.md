@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/jangopay/.github/main/assets/brand-banner-zh.png" alt="JangoPay — stablecoin payments for global online businesses" width="100%"></p>
+<p align="center"><img src="assets/brand-banner-zh.png" alt="JangoPay — stablecoin payments for global online businesses" width="100%"></p>
 
 <p align="center"><a href="README.md">English</a> · <a href="https://www.jangopay.org/">Website</a> · <a href="mailto:contact@jangopay.org">Contact</a></p>
 
