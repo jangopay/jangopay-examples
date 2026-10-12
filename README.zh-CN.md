@@ -1,34 +1,56 @@
-<p align="center"><img src="assets/brand-banner-zh.png" alt="JangoPay — stablecoin payments for global online businesses" width="100%"></p>
+<p align="center"><img src="assets/brand-banner-zh.png" alt="JangoPay" width="100%"></p>
 
-<p align="center"><a href="README.md">English</a> · <a href="https://www.jangopay.org/">Website</a> · <a href="mailto:contact@jangopay.org">Contact</a></p>
+<p align="center"><a href="README.md">English</a> · <a href="https://doc.jangopay.org/">Developer docs</a> · <a href="https://github.com/jangopay/jangopay-docs">API guide</a></p>
 
-# JangoPay 接入流程模板
+# JangoPay 服务端接入示例
 
-**为在线业务规划可落地的支付流程。**
+基于官方 API 契约的 Node.js、Python、PHP 请求示例。默认查询收款单列表；显式添加 --create 才创建收款单。
 
-本仓库提供商户业务流程模板和可复用的上线检查清单。它**不是 SDK**，不包含未经核实的 JangoPay 接口或可执行支付请求。
-
-## 场景模板
-
-| 流程 | 适用业务 | 查看 |
+| 语言 | 环境 | 文件 |
 | :--- | :--- | :--- |
-| 收款链接 | 无需定制开发，快速开始收款 | [中文](recipes/workflows.zh-CN.md#收款链接) · [English](recipes/workflows.en.md#payment-link) |
-| 数字交付 | 确认付款后开放内容、授权或下载 | [中文](recipes/workflows.zh-CN.md#数字交付) · [English](recipes/workflows.en.md#digital-delivery) |
-| 服务续费 | SaaS、服务器等在线服务续费 | [中文](recipes/workflows.zh-CN.md#服务续费) · [English](recipes/workflows.en.md#service-renewal) |
+| Node.js | 20+ | [payment.mjs](node/payment.mjs) |
+| Python | 3.10+ | [payment.py](python/payment.py) |
+| PHP | 8.1+ / cURL | [payment.php](php/payment.php) |
 
-## 上线前检查
+## 运行
 
-- [ ] 确认支持的币种、网络组合及费用。
-- [ ] 建立业务订单与收款记录的对应关系。
-- [ ] 使用正式文档规定的方法验证通知。
-- [ ] 安全处理重复、延迟和乱序通知。
-- [ ] 仅在验证付款确认后交付商品或开通服务。
-- [ ] 为超时、少付、多付或不支持的付款准备处理流程。
-- [ ] 密钥仅存放在服务端，日志隐藏敏感信息。
-- [ ] 上线前核对收款记录与业务订单。
+在服务端环境配置 JANGOPAY_API_KEY。读取列表需要查询权限，创建收款单需要创建权限。示例使用系统标准库，不需要安装 SDK。
 
-## 使用边界
+```bash
+node node/payment.mjs
+python3 python/payment.py
+php php/payment.php
+```
 
-图示与步骤只描述业务流程，不代表正式事件字段或接口契约。实际请求、验签、状态值与技术接入，以正式 API 文档为准。
+创建前另外设置以下环境变量。金额是 USD 计价字符串，资产必须是当前启用的币种与网络组合。订单号来自你的服务端订单。
 
-[产品文档](https://github.com/jangopay/jangopay-docs) · [官网](https://www.jangopay.org/) · [联系团队](mailto:contact@jangopay.org)
+```text
+JANGOPAY_ORDER_ID=ORDER-1001
+JANGOPAY_AMOUNT=10.00
+JANGOPAY_ALLOWED_ASSET=USDT:tron
+```
+
+```bash
+# 任选一种语言；每次执行会创建收款单。
+node node/payment.mjs --create
+python3 python/payment.py --create
+php php/payment.php --create
+```
+
+示例仅输出 invoiceId 或记录数量，不输出令牌。创建请求不会自动重试；orderId 不是幂等键。创建超时后先查询并核对记录，持久化本地订单映射后再继续收银台流程。
+
+## 付款通知
+
+Webhook 使用 RSA-OAEP-SHA256 与 AES-256-GCM。按正式实现解密并核对服务端记录，以数据库约束与事务保证订单只交付一次。
+
+[Webhook 指南](https://github.com/jangopay/jangopay-docs/blob/main/docs/zh-CN/webhooks.md) · [官方指南](https://doc.jangopay.org/integration-guide?section=production)
+
+## 场景与插件
+
+[收款、数字交付与服务续费](recipes/workflows.zh-CN.md) · [Dujiaoka 2.x](https://doc.jangopay.org/integration-guide?section=dujiaoka) · [SDK](https://doc.jangopay.org/integration-guide?section=sdk)
+
+## 验证范围
+
+示例提供令牌获取、列表查询和显式创建请求，不含完整商户数据库或收银台。代码未使用真实商户凭据进行线上付款联调；上线前请完成账户环境中的请求与通知测试。
+
+契约核对日期: 2026-10-12 · [API Reference](https://doc.jangopay.org/api-reference) · [contact@jangopay.org](mailto:contact@jangopay.org)

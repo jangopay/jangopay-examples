@@ -1,34 +1,56 @@
-<p align="center"><img src="assets/brand-banner-en.png" alt="JangoPay — stablecoin payments for global online businesses" width="100%"></p>
+<p align="center"><img src="assets/brand-banner-en.png" alt="JangoPay" width="100%"></p>
 
-<p align="center"><a href="README.zh-CN.md">简体中文</a> · <a href="https://www.jangopay.org/">Website</a> · <a href="mailto:contact@jangopay.org">Contact</a></p>
+<p align="center"><a href="README.zh-CN.md">简体中文</a> · <a href="https://doc.jangopay.org/">Developer docs</a> · <a href="https://github.com/jangopay/jangopay-docs">API guide</a></p>
 
-# JangoPay Integration Recipes
+# JangoPay Server Integration Examples
 
-**Practical workflows for online businesses.**
+Node.js, Python and PHP request examples based on the official API contract. The default command reads invoice records; --create explicitly creates an invoice.
 
-This repository provides merchant workflow recipes and a reusable launch checklist. It is **not an SDK** and does not include unverified JangoPay endpoints or executable payment requests.
-
-## Recipes
-
-| Workflow | Best for | Read |
+| Language | Runtime | File |
 | :--- | :--- | :--- |
-| Payment link | A quick launch without a custom integration | [English](recipes/workflows.en.md#payment-link) · [中文](recipes/workflows.zh-CN.md#收款链接) |
-| Digital delivery | Content access, licenses and downloads after confirmed payment | [English](recipes/workflows.en.md#digital-delivery) · [中文](recipes/workflows.zh-CN.md#数字交付) |
-| Service renewal | SaaS, hosting and other service renewals | [English](recipes/workflows.en.md#service-renewal) · [中文](recipes/workflows.zh-CN.md#服务续费) |
+| Node.js | 20+ | [payment.mjs](node/payment.mjs) |
+| Python | 3.10+ | [payment.py](python/payment.py) |
+| PHP | 8.1+ / cURL | [payment.php](php/payment.php) |
 
-## Before going live
+## Run
 
-- [ ] Confirm supported asset/network combinations and applicable fees.
-- [ ] Map merchant orders to payment records.
-- [ ] Verify notifications using the official documented method.
-- [ ] Handle duplicated, delayed and out-of-order notifications safely.
-- [ ] Deliver goods or activate services only after verified confirmation.
-- [ ] Prepare recovery paths for expired, short, excess or unsupported payments.
-- [ ] Keep secrets server-side and redact logs.
-- [ ] Reconcile payment and business records before launch.
+Configure JANGOPAY_API_KEY in your server environment. Listing requires read permission; creation requires invoice-create permission. Examples use standard runtime libraries rather than an SDK.
 
-## Implementation boundary
+```bash
+node node/payment.mjs
+python3 python/payment.py
+php php/payment.php
+```
 
-Any diagrams and steps here describe business workflows, not a published event schema. Use the official API documentation for actual requests, signatures, status values and integrations.
+Before creation, also configure these environment variables. Amount is a USD pricing string; the asset must be an enabled currency/network pair. Use an order ID from your server-side order system.
 
-[Product documentation](https://github.com/jangopay/jangopay-docs) · [Website](https://www.jangopay.org/) · [Contact](mailto:contact@jangopay.org)
+```text
+JANGOPAY_ORDER_ID=ORDER-1001
+JANGOPAY_AMOUNT=10.00
+JANGOPAY_ALLOWED_ASSET=USDT:tron
+```
+
+```bash
+# Choose one language; each execution creates an invoice.
+node node/payment.mjs --create
+python3 python/payment.py --create
+php php/payment.php --create
+```
+
+Examples print only invoiceId or a record count, never tokens. Creation is not automatically retried; orderId is not an idempotency key. Reconcile ambiguous timeouts and persist order mappings before continuing checkout.
+
+## Payment notifications
+
+Webhooks use RSA-OAEP-SHA256 and AES-256-GCM. Decrypt using the official implementation, reconcile server-side records, and use database constraints and transactions to fulfill each order once.
+
+[Webhook guide](https://github.com/jangopay/jangopay-docs/blob/main/docs/en/webhooks.md) · [Official guide](https://doc.jangopay.org/integration-guide?section=production)
+
+## Workflows and integrations
+
+[Collection, digital delivery and renewal](recipes/workflows.en.md) · [Dujiaoka 2.x](https://doc.jangopay.org/integration-guide?section=dujiaoka) · [SDK](https://doc.jangopay.org/integration-guide?section=sdk)
+
+## Validation scope
+
+Examples cover token issuance, list queries and explicit creation requests, without a merchant database or checkout application. They have not been exercised against a live merchant account; complete request and notification testing in your account before production use.
+
+Contract checked: 2026-10-12 · [API Reference](https://doc.jangopay.org/api-reference) · [contact@jangopay.org](mailto:contact@jangopay.org)
