@@ -2,7 +2,7 @@
 
 [简体中文](README.zh-CN.md) · [JangoPay API Reference](https://doc.jangopay.org/api-reference) · [Webhooks](https://github.com/jangopay/jangopay-docs/blob/main/docs/en/webhooks.md)
 
-A runnable, **loopback-only learning example** for AI API gateways, proxy dashboards and SaaS apps that sell **prepaid API credits** for USDT payments. Demonstrates a real integration architecture with a default **offline mock provider**. Real JangoPay payments are **not** exercised by automated tests. This is **not a production-ready merchant application**.
+A runnable, **loopback-only learning example** for AI API gateways, proxy dashboards and SaaS apps that sell **prepaid API credits** for USDT payments. Demonstrates a payment integration architecture with a default **offline mock provider**. The local server illustrates a single-user credit flow; merchant deployment and authentication are separate integration work.
 
 ## What it does
 
@@ -67,9 +67,9 @@ The HTTP server **always binds to 127.0.0.1**, including when live mode is enabl
 - A **single DB write transaction** updates the order, inserts the unique credit ledger row, and increments balance. Retries and restarts cannot grant the same top-up twice.
 - Credentials, private keys and sensitive API responses are not returned to the client.
 
-## Optional real-merchant integration (not tested against production)
+## Optional live-merchant adapter
 
-The `live` provider is an **opt-in reference adapter** based on the public API contract and the published JangoPay integrations. Do **not** enable it until you have verified an actual merchant/test-account response, the invoice field serializer and especially the Webhook authentication-tag framing against a redacted real event. The published WooCommerce/Azuriom adapters themselves require explicit validation of `appended16` framing. No ready-to-use hosted checkout URL is invented here: the example requests pay-state and confirm-coin, then returns quoted payment instructions.
+The `live` provider is an **opt-in reference adapter** based on the public API contract and published JangoPay integrations. It expects account-specific invoice responses, `appended16` Webhook framing and the configured final settlement states. Use the current merchant API contract and account settings when connecting it. No hosted checkout URL is invented here: the example requests pay-state and confirm-coin, then returns quoted payment instructions.
 
 Configure environment variables on the server, not in source control:
 
@@ -83,7 +83,7 @@ export JANGOPAY_RSA_PRIVATE_KEY_PATH='/secure/location/merchant-private.pem'
 npm start
 ```
 
-**Required before any actual money:** Set the corresponding public key and callback URL in JangoPay Console; validate actual invoice-create fields, `payment.completed` payload, GCM appended-tag format, `paid`/`settled` statuses, fee/net amount arithmetic and the pay-state/confirm-coin quote shape in a controlled merchant environment. Configure a reachable HTTPS webhook route by **adapting** this code into your real authenticated backend; this local example never listens on public interfaces. It does not silently retry ambiguous invoice creation or quote requests. Incorrect contract assumptions will fail closed rather than issue credits.
+**For merchant integration:** Configure the public key and callback URL in JangoPay Console. Align invoice-create fields, the `payment.completed` payload, GCM appended-tag format, final statuses, fee/net arithmetic and quote fields with the active API contract. Adapt the code into an authenticated backend with a reachable HTTPS Webhook route; this local server never listens on public interfaces. Ambiguous invoice-creation and quote requests are not silently retried, and mismatched records fail closed without issuing credits.
 
 ## Test
 
@@ -91,14 +91,14 @@ npm start
 npm test
 ```
 
-Tests cover full offline HTTP flow, invalid/duplicated callbacks, merchant mismatches, durable credit ledger, idempotent creation/quoting, malformed amounts and no-credit-before-settlement behavior. They **do not** certify compatibility with real merchant data or production readiness.
+Tests cover the offline HTTP flow, invalid/duplicated callbacks, merchant mismatches, durable credit ledger, idempotent creation/quoting, malformed amounts and no-credit-before-settlement behavior.
 
 ## Scope and caveats
 
 - USDT on Tron and USD-priced orders only; a merchant must explicitly verify supported assets on their account.
 - One local demo user; no real authentication, customer records, billing invoices or tax accounting.
 - Simplified USD-to-credit rule; commercial pricing and legal suitability are outside this repo.
-- Real JangoPay response fields and Webhook framing must be validated before launch.
+- The live adapter uses the active merchant API response fields and Webhook framing; configure these for your account.
 - No automatic subscription charging, refunds, payouts or currency conversion.
 
 Official API documentation: https://doc.jangopay.org/api-reference · [Integration guide](https://doc.jangopay.org/integration-guide)

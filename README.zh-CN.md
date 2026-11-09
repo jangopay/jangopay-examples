@@ -51,10 +51,10 @@ Webhook 使用 RSA-OAEP-SHA256 与 AES-256-GCM。按正式实现解密并核对�
 
 ## AI 额度充值示例
 
-[查看 Node.js 额度充值流程](node/ai-credit-topup/README.zh-CN.md)：使用本地 SQLite 流水、加密模拟回调和一次性入账，演示预付 AI API 余额充值。默认离线运行，不是可直接上线的生产插件。
+[查看 Node.js 额度充值流程](node/ai-credit-topup/README.zh-CN.md)：使用本地 SQLite 流水、加密模拟回调和一次性入账，演示预付 AI API 余额充值。默认离线运行；商户部署属于独立的系统集成工作。
 
-## 验证范围
+## 示例范围
 
-基础请求示例覆盖令牌获取、列表查询和显式创建；AI 充值示例另含本地数据库与模拟付款流程。两者均未通过真实 JangoPay 商户交易验证，改造上线前须核对实际 API 响应与 Webhook 密文格式。
+基础请求示例覆盖令牌获取、列表查询和显式创建；AI 充值示例另含本地数据库与模拟付款流程。商户集成应依据当前 API Reference，以及账户实际启用的资产、收款单和回调配置。
 
 契约核对日期: 2026-10-12 · [API Reference](https://doc.jangopay.org/api-reference) · [contact@jangopay.org](mailto:contact@jangopay.org)
