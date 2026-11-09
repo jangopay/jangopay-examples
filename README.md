@@ -49,8 +49,12 @@ Webhooks use RSA-OAEP-SHA256 and AES-256-GCM. Decrypt using the official impleme
 
 [Collection, digital delivery and renewal](recipes/workflows.en.md) · [Dujiaoka 2.x](https://doc.jangopay.org/integration-guide?section=dujiaoka) · [SDK](https://doc.jangopay.org/integration-guide?section=sdk)
 
+## AI credit top-up example
+
+[Explore the Node.js credit top-up workflow](node/ai-credit-topup/README.md): a local SQLite ledger, encrypted mock callback and exactly-once crediting for a prepaid AI API balance. It runs offline by default and is not a production plugin.
+
 ## Validation scope
 
-Examples cover token issuance, list queries and explicit creation requests, without a merchant database or checkout application. They have not been exercised against a live merchant account; complete request and notification testing in your account before production use.
+The small request examples cover token issuance, list queries and explicit creation. The AI top-up example adds a local database and mock payment flow. Neither has been verified with a real JangoPay merchant transaction; validate actual API responses and Webhook framing before adapting either for production.
 
 Contract checked: 2026-10-12 · [API Reference](https://doc.jangopay.org/api-reference) · [contact@jangopay.org](mailto:contact@jangopay.org)
