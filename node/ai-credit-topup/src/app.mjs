@@ -133,7 +133,7 @@ function provider(db, config) {
   if (config.mode !== 'live' || process.env.ALLOW_REAL_PAYMENTS !== '1'
     || process.env.JANGOPAY_WEBHOOK_TAG_FORMAT !== 'appended16'
     || process.env.JANGOPAY_FINAL_INVOICE_STATUSES !== 'paid'
-    || !/^JangoPay_/.test(process.env.JANGOPAY_API_KEY ?? '')) fail(500, 'Live mode is disabled until manually validated and opted in');
+    || !/^JangoPay_/.test(process.env.JANGOPAY_API_KEY ?? '')) fail(500, 'Live mode requires explicit opt-in and merchant configuration');
   // Read-only invoice/transaction reconciliation is required even after a decryptable notification.
   let token;
   const call = async (path, method, auth, body) => {
