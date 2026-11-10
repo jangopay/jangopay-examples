@@ -4,7 +4,7 @@
 
 # JangoPay 服务端接入示例
 
-基于官方 API 契约的 Node.js、Python、PHP 请求示例。默认查询收款单列表；显式添加 --create 才创建收款单。
+基于官方 API 契约的 Node.js、Python、PHP 请求示例，以及本地运行的商户业务流程演示。基础请求默认查询收款单列表；显式添加 --create 才创建收款单。
 
 | 语言 | 环境 | 文件 |
 | :--- | :--- | :--- |
@@ -53,8 +53,16 @@ Webhook 使用 RSA-OAEP-SHA256 与 AES-256-GCM。按正式实现解密并核对�
 
 [查看 Node.js 额度充值流程](node/ai-credit-topup/README.zh-CN.md)：使用本地 SQLite 流水、加密模拟回调和一次性入账，演示预付 AI API 余额充值。默认离线运行；商户部署属于独立的系统集成工作。
 
+## 数字商品交付与服务续期
+
+[查看 Node.js 履约示例](node/merchant-fulfillment/README.zh-CN.md)：在本地模拟付款并核对收款单和交易后，发放演示授权码或延长 VPN/Hosting 演示服务期限；同一订单只执行一次。它复用 AI 充值示例的加密函数，请克隆完整仓库。示例不包含特定 VPN 面板插件或自动周期扣款。
+
+## 本地检查
+
+环境具备 Node.js 22.16+、Python 3.10+ 和 PHP 8.1+ 时，运行 `bash scripts/check-examples.sh`。GitHub PR 也会运行同一套离线检查。
+
 ## 示例范围
 
-基础请求示例覆盖令牌获取、列表查询和显式创建；AI 充值示例另含本地数据库与模拟付款流程。商户集成应依据当前 API Reference，以及账户实际启用的资产、收款单和回调配置。
+基础请求示例覆盖令牌获取、列表查询和显式创建；AI 充值与商户履约示例另含本地数据库与模拟付款流程。商户集成应依据当前 API Reference，以及账户实际启用的资产、收款单和回调配置。
 
 契约核对日期: 2026-10-12 · [API Reference](https://doc.jangopay.org/api-reference) · [contact@jangopay.org](mailto:contact@jangopay.org)
