@@ -1,0 +1,1 @@
+{"name":"jangopay-merchant-fulfillment-example","private":true,"type":"module","version":"0.1.0","engines":{"node":">=22.16.0"},"scripts":{"setup":"node src/app.mjs setup","start":"node src/app.mjs serve","simulate":"node src/app.mjs simulate","test":"node --test test/*.test.mjs"}}

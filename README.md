@@ -4,7 +4,7 @@
 
 # JangoPay Server Integration Examples
 
-Node.js, Python and PHP request examples based on the official API contract. The default command reads invoice records; --create explicitly creates an invoice.
+Node.js, Python and PHP request examples based on the official API contract, plus local merchant workflow demos. The default request command reads invoice records; --create explicitly creates an invoice.
 
 | Language | Runtime | File |
 | :--- | :--- | :--- |
@@ -53,8 +53,16 @@ Webhooks use RSA-OAEP-SHA256 and AES-256-GCM. Decrypt using the official impleme
 
 [Explore the Node.js credit top-up workflow](node/ai-credit-topup/README.md): a local SQLite ledger, encrypted mock callback and exactly-once crediting for a prepaid AI API balance. It runs offline by default; merchant deployment is a separate integration.
 
+## Digital goods and service renewal
+
+[Explore the Node.js fulfillment workflow](node/merchant-fulfillment/README.md): a local mock payment can issue an example digital license or extend a demo VPN/hosting service after invoice and transaction reconciliation. Fulfillment is recorded once per order. This example imports helpers from the AI credit top-up project, so clone the whole repository. It is not a plugin for a specific VPN panel or an automatic recurring-billing system.
+
+## Local checks
+
+Run `bash scripts/check-examples.sh` with Node.js 22.16+, Python 3.10+ and PHP 8.1+ available. The same offline checks run in GitHub Actions for pull requests.
+
 ## Example scope
 
-The small request examples cover token issuance, list queries and explicit creation. The AI top-up example adds a local database and simulated payment flow. For merchant integration, use the current API Reference and your account's asset, invoice and callback settings.
+The small request examples cover token issuance, list queries and explicit creation. The AI top-up and merchant-fulfillment examples add local databases and simulated payment flows. For merchant integration, use the current API Reference and your account's asset, invoice and callback settings.
 
 Contract checked: 2026-10-12 · [API Reference](https://doc.jangopay.org/api-reference) · [contact@jangopay.org](mailto:contact@jangopay.org)
